@@ -1,0 +1,8 @@
+CAPI=1
+[main]
+description = CorePort - Wishbone GPIO Peripheral
+
+[fileset rtl_files]
+files =
+ coreport.v
+file_type = verilogSource
