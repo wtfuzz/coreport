@@ -1,8 +1,17 @@
-CAPI=1
-[main]
-description = CorePort - Wishbone GPIO Peripheral
+CAPI=2:
+name : ::coreport:1.1
+description: "Wishbone GPIO Peripheral with interrupt support"
 
-[fileset rtl_files]
-files =
- coreport.v
-file_type = verilogSource
+filesets:
+    rtl:
+        files: [coreport.v]
+        file_type: verilogSource
+
+targets:
+    default: &base
+        filesets: [rtl]
+
+provider:
+    name: github
+    user: wtfuzz
+    repo: coreport
