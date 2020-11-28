@@ -6,7 +6,7 @@ The data width can be specified using the `WIDTH` parameter.
 
 ### Registers
 
-All registers are 32 bits wide, and each bit represents a port pin.
+All registers are `WIDTH` bits wide, and each bit represents a port pin.
 
 | Register | Offset  | Description                          |
 |----------|---------|--------------------------------------|
