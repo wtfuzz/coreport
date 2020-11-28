@@ -2,7 +2,7 @@
 
 CorePort is a FuseSoC core which provides a Wishbone GPIO port with interrupt capability.
 
-Currently CorePort provides a fixed width 32 bit port.
+The data width can be specified using the `WIDTH` parameter.
 
 ### Registers
 
@@ -15,6 +15,7 @@ All registers are 32 bits wide, and each bit represents a port pin.
 | IMR      | 0x08    | Interrupt Mask                       |
 | IFR      | 0x0C    | Interrupt Flag                       |
 | IER      | 0x10    | Interrupt Edge (not implemented yet) |
+| DIR      | 0x14    | Data Inversion Register              |
 
 #### DATAR
 
@@ -44,4 +45,12 @@ Interrupt flag register. This register is used to determine which pin in the por
 This register is latched on interrupt generation per pin. If the pin that generated the interrupt falls, the bit in the IFR register remains set until it is explicitly cleared by a Wishbone master.
 
 The single IRQ output line from the core will remain high as long as IFR has a set bit.
+
+#### DIR
+
+Data Inversion Register
+
+0: Data lines not inverted
+1: Data lines are inverted
+
 
