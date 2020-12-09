@@ -17,7 +17,8 @@
 
 module coreport #(
   parameter WIDTH = 8,
-  parameter INITIAL_DDR = 0
+  parameter INITIAL_DDR = 0,
+  parameter TRISTATE = "GENERIC"
 )(
   /* Wishbone Interface */
   input                       wb_clk,
@@ -59,11 +60,29 @@ reg   [WIDTH-1:0]   ifr;
 /* Interrupt Edge Register */
 reg   [WIDTH-1:0]   ier;
 
+wire  [WIDTH-1:0]   gpio_in;
+
 /* Tristate pin logic */
-genvar                    i;
+genvar i;
 generate
-  for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
-    assign gpio_io[i] = (ddr[i] && !wb_rst) ? datar[i] : 1'bz;
+  if(TRISTATE=="GENERIC") begin : generic_tristate
+    for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
+      assign gpio_io[i] = (ddr[i] && !wb_rst) ? datar[i] : 1'bz;
+      assign gpio_in[i] = gpio_io[i];
+    end
+  end else if(TRISTATE=="ICESTORM") begin : icestorm_tristate
+    // Instantiate an SB_IO primitive for each IO port
+    for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
+      SB_IO #( 
+        .PIN_TYPE(6'b 1010_01), 
+        .PULLUP(1'b0) 
+      ) io_buf ( 
+        .PACKAGE_PIN(gpio_io[i]), 
+        .OUTPUT_ENABLE(ddr[i]), 
+        .D_OUT_0(datar[i]),
+        .D_IN_0(gpio_in[i])
+      ); 
+    end
   end
 endgenerate
 
@@ -92,7 +111,7 @@ always @(posedge wb_clk) begin
     endcase
   end
   else begin
-    ifr <= (imr & ~ddr) & (gpio_io | ifr);
+    ifr <= (imr & ~ddr) & (gpio_in | ifr);
   end
 end
 
@@ -100,7 +119,7 @@ end
 always @(posedge wb_clk) begin
   if (wb_cyc_i & wb_stb_i & !wb_we_i) begin
     case(wb_adr_i[7:0])
-      8'h00 : wb_dat_o <= gpio_io ^ dir;
+      8'h00 : wb_dat_o <= gpio_in ^ dir;
       8'h04 : wb_dat_o <= ddr;
       8'h08 : wb_dat_o <= imr;
       8'h0C : wb_dat_o <= ifr;
