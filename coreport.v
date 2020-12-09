@@ -73,12 +73,12 @@ assign irq = (ifr == 0) ? 1'b0 : 1'b1;
 /* Register Writes */
 always @(posedge wb_clk) begin
   if (wb_rst) begin
-    datar <= `WIDTH'd0;
-    dir <= `WIDTH'd0;
-    ddr <= `WIDTH'd0;
-    imr <= `WIDTH'd0;
-    ifr <= `WIDTH'd0; 
-    ier <= `WIDTH'd0; 
+    datar <= {WIDTH{1'b0}};
+    dir <= {WIDTH{1'b0}};
+    ddr <= {WIDTH{1'b0}};
+    imr <= {WIDTH{1'b0}};
+    ifr <= {WIDTH{1'b0}}; 
+    ier <= {WIDTH{1'b0}}; 
   end
 
   else if (wb_cyc_i & wb_stb_i && wb_we_i) begin
