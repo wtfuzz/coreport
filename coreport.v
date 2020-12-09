@@ -84,6 +84,18 @@ generate
         .D_IN_0(gpio_in[i])
       ); 
     end
+  end else if(TRISTATE="TRELLIS") begin : trellis_tristate
+    // Instantiate a TRELLIS_IO primitive for each IO port
+    for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
+      TRELLIS_IO #(
+        .DIR("BIDIR")
+      ) io_buf (
+        .B(gpio_io[i]),
+        .I(datar[i]),
+        .O(gpio_in[i]),
+        .T(ddr[i])
+      );
+    end
   end
 endgenerate
 
