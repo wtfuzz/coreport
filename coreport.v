@@ -19,6 +19,7 @@ module coreport #(
   parameter WIDTH = 8,
   parameter INITIAL_DDR = 0,
   parameter INITIAL_DATAR = 0,
+  parameter INITIAL_DIR = 0,
   parameter TRISTATE = "GENERIC"
 )(
   /* Wishbone Interface */
@@ -106,7 +107,7 @@ assign irq = (ifr == 0) ? 1'b0 : 1'b1;
 always @(posedge wb_clk) begin
   if (wb_rst) begin
     datar <= INITIAL_DATAR;
-    dir <= {WIDTH{1'b0}};
+    dir <= INITIAL_DIR;
     ddr <= INITIAL_DDR;
     imr <= {WIDTH{1'b0}};
     ifr <= {WIDTH{1'b0}}; 
