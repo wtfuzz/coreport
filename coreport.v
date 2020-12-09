@@ -86,8 +86,8 @@ generate
         .DIR("BIDIR")
       ) io_buf (
         .B(gpio_io[i]),
-        .I(datar[i]),
-        .O(gpio_in[i]),
+        .O(datar[i]),
+        .I(gpio_in[i]),
         .T(ddr[i])
       );
     end
