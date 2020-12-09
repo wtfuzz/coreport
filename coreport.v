@@ -66,12 +66,7 @@ wire  [WIDTH-1:0]   gpio_in;
 /* Tristate pin logic */
 genvar i;
 generate
-  if(TRISTATE=="GENERIC") begin : generic_tristate
-    for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
-      assign gpio_io[i] = (ddr[i] && !wb_rst) ? datar[i] : 1'bz;
-      assign gpio_in[i] = gpio_io[i];
-    end
-  end else if(TRISTATE=="ICESTORM") begin : icestorm_tristate
+  if(TRISTATE=="ICESTORM") begin : icestorm_tristate
     // Instantiate an SB_IO primitive for each IO port
     for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
       SB_IO #( 
@@ -95,6 +90,11 @@ generate
         .O(gpio_in[i]),
         .T(ddr[i])
       );
+    end
+  end else begin
+    for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
+      assign gpio_io[i] = (ddr[i] && !wb_rst) ? datar[i] : 1'bz;
+      assign gpio_in[i] = gpio_io[i];
     end
   end
 endgenerate
