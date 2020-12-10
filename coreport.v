@@ -89,7 +89,7 @@ generate
         .B(gpio_io[i]),
         .O(datar[i]),
         .I(gpio_in[i]),
-        .T(ddr[i])
+        .T(~ddr[i])
       );
     end
   end else begin
