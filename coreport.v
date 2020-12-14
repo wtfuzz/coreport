@@ -125,7 +125,7 @@ always @(posedge wb_clk) begin
     endcase
   end
   else begin
-    ifr <= (imr & ~ddr) & (gpio_in | ifr);
+    //ifr <= (imr & ~ddr) & (gpio_in | ifr);
   end
 end
 
