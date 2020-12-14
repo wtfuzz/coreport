@@ -37,8 +37,12 @@ module coreport #(
   output                      wb_err_o,
   output                      wb_rty_o,
  
-  /* Physical pin interface */ 
+  /* Tristate Bidirectional Pins */ 
   inout         [WIDTH-1:0]   gpio_io,
+
+  /* Unidirectional ports for TRISTATE=NONE */
+  input         [WIDTH-1:0]   gpio_i,
+  output        [WIDTH-1:0]   gpio_o,
 
   /* Interrupt Output */
   output                      irq
@@ -92,6 +96,15 @@ generate
         .T(~ddr[i])
       );
     end
+  end else if(TRISTATE=="NONE") begin
+    // Generate unidirectional ports
+    for (i = 0; i < WIDTH; i = i+1) begin : coreport_unidirectional
+      if(INITIAL_DDR[i] == 1) begin
+        assign gpio_o[i] = datar[i];
+      end else begin
+        assign gpio_in[i] = gpio_i[i];
+      end
+    end
   end else begin
     for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
       assign gpio_io[i] = (ddr[i] && !wb_rst) ? datar[i] : 1'bz;
@@ -125,7 +138,7 @@ always @(posedge wb_clk) begin
     endcase
   end
   else begin
-    //ifr <= (imr & ~ddr) & (gpio_in | ifr);
+    ifr <= (imr & ~ddr) & (gpio_in | ifr);
   end
 end
 
