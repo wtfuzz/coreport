@@ -95,7 +95,7 @@ generate
   end else begin
     for (i = 0; i < WIDTH; i = i+1) begin: coreport_tristate
       assign gpio_io[i] = (ddr[i] && !wb_rst) ? datar[i] : 1'bz;
-      assign gpio_in[i] = ddr[i] ? gpio_io[i] : 1'bz;
+      assign gpio_in[i] = ~ddr[i] ? gpio_io[i] : 1'bz;
     end
   end
 endgenerate
